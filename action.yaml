@@ -1,0 +1,28 @@
+name: "Get Repository Size"
+description: "This action will get the repository size in kilobytes"
+
+inputs:
+  GITHUB_TOKEN:
+    description: "Token that has read access to repository"
+    required: true
+
+outputs:
+  REPO_SIZE:
+    description: "git repository size in kilobytes"
+    value: ${{steps.get-repository-size.outputs.size}}
+
+runs:
+  using: composite
+  steps:
+    - name: Set GitHub Path
+      run: echo "$GITHUB_ACTION_PATH" >> $GITHUB_PATH
+      shell: bash
+      env:
+        GITHUB_ACTION_PATH: ${{ github.action_path }}
+
+    - name: Run script.sh
+      id: get-repository-size
+      run: script.sh
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
